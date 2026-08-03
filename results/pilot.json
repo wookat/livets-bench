@@ -1,0 +1,468 @@
+{
+  "config": {
+    "horizon": 14,
+    "n_origins": 4,
+    "seed": 42,
+    "skip_chronos": false,
+    "out": "results/pilot.json"
+  },
+  "release_date_cutoff": "2024-11-26",
+  "run_at": "2026-08-03T12:11:22.333823+00:00",
+  "env": {
+    "python": "3.12.8",
+    "numpy": "2.5.1",
+    "pandas": "3.0.5"
+  },
+  "summary": {
+    "seasonal_naive": {
+      "geomean_mase": 1.1713730394526871,
+      "geomean_crps": 21.00138309454164,
+      "geomean_wql": 0.07785877857764076,
+      "n_evals": 24
+    },
+    "chronos-bolt-small": {
+      "geomean_mase": 1.0894469168006378,
+      "geomean_crps": 18.237871661175458,
+      "geomean_wql": 0.06761356644953298,
+      "n_evals": 24
+    }
+  },
+  "per_window": {
+    "seasonal_naive": [
+      {
+        "series_id": "weather:berlin:t2m_mean",
+        "domain": "weather",
+        "origin": "2024-11-27 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.2325080372984005,
+        "crps": 3.392793650793651,
+        "wql": 0.8911653116531165
+      },
+      {
+        "series_id": "weather:berlin:t2m_mean",
+        "domain": "weather",
+        "origin": "2025-06-14 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.3858848349221684,
+        "crps": 3.8549206349206355,
+        "wql": 0.1825740490151857
+      },
+      {
+        "series_id": "weather:berlin:t2m_mean",
+        "domain": "weather",
+        "origin": "2025-12-30 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.2171364778118896,
+        "crps": 3.283238095238095,
+        "wql": 0.8222778771615982
+      },
+      {
+        "series_id": "weather:berlin:t2m_mean",
+        "domain": "weather",
+        "origin": "2026-07-18 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.1764687352338952,
+        "crps": 3.2667301587301587,
+        "wql": 0.1679552780838128
+      },
+      {
+        "series_id": "weather:nyc:t2m_mean",
+        "domain": "weather",
+        "origin": "2024-11-27 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.5459342835921195,
+        "crps": 4.124539682539682,
+        "wql": 1.365095876017862
+      },
+      {
+        "series_id": "weather:nyc:t2m_mean",
+        "domain": "weather",
+        "origin": "2025-06-14 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.284370477568741,
+        "crps": 4.204444444444444,
+        "wql": 0.16924158200753944
+      },
+      {
+        "series_id": "weather:nyc:t2m_mean",
+        "domain": "weather",
+        "origin": "2025-12-30 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.1524870161160787,
+        "crps": 3.55,
+        "wql": 1.0419287211740043
+      },
+      {
+        "series_id": "weather:nyc:t2m_mean",
+        "domain": "weather",
+        "origin": "2026-07-18 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.7727120592558099,
+        "crps": 2.4492698412698415,
+        "wql": 0.10422424856467412
+      },
+      {
+        "series_id": "crypto:BTC-USD:close",
+        "domain": "crypto_fx",
+        "origin": "2024-11-27 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 7.523659349988839,
+        "crps": 5221.94203809524,
+        "wql": 0.05354288617488876
+      },
+      {
+        "series_id": "crypto:BTC-USD:close",
+        "domain": "crypto_fx",
+        "origin": "2025-06-15 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.6699025119434203,
+        "crps": 1261.8916412698418,
+        "wql": 0.011988972142232714
+      },
+      {
+        "series_id": "crypto:BTC-USD:close",
+        "domain": "crypto_fx",
+        "origin": "2026-01-01 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 4.336807948613589,
+        "crps": 3880.386723809519,
+        "wql": 0.04224415158447897
+      },
+      {
+        "series_id": "crypto:BTC-USD:close",
+        "domain": "crypto_fx",
+        "origin": "2026-07-21 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.2759700315494904,
+        "crps": 1038.8684920634937,
+        "wql": 0.016177383347384285
+      },
+      {
+        "series_id": "fx:EURUSD",
+        "domain": "crypto_fx",
+        "origin": "2024-11-27 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.7205390835579543,
+        "crps": 0.001793777777777783,
+        "wql": 0.0017040012545386605
+      },
+      {
+        "series_id": "fx:EURUSD",
+        "domain": "crypto_fx",
+        "origin": "2025-06-16 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 3.625141960549908,
+        "crps": 0.011469142857142851,
+        "wql": 0.009863747496713472
+      },
+      {
+        "series_id": "fx:EURUSD",
+        "domain": "crypto_fx",
+        "origin": "2025-12-24 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 2.5312026913372754,
+        "crps": 0.007524761904761986,
+        "wql": 0.0064324414538734975
+      },
+      {
+        "series_id": "fx:EURUSD",
+        "domain": "crypto_fx",
+        "origin": "2026-07-14 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.9206579559475019,
+        "crps": 0.0023465079365079505,
+        "wql": 0.00205536542417374
+      },
+      {
+        "series_id": "web_traffic:Bitcoin",
+        "domain": "web_traffic",
+        "origin": "2024-11-27 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 3.36295946457165,
+        "crps": 4416.892063492063,
+        "wql": 0.33346899106360695
+      },
+      {
+        "series_id": "web_traffic:Bitcoin",
+        "domain": "web_traffic",
+        "origin": "2025-06-14 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.23939453371513778,
+        "crps": 390.58222222222224,
+        "wql": 0.08163247161470644
+      },
+      {
+        "series_id": "web_traffic:Bitcoin",
+        "domain": "web_traffic",
+        "origin": "2025-12-31 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.37308583871874124,
+        "crps": 459.6419047619048,
+        "wql": 0.12017230646647245
+      },
+      {
+        "series_id": "web_traffic:Bitcoin",
+        "domain": "web_traffic",
+        "origin": "2026-07-19 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.15720105964519085,
+        "crps": 307.0317460317461,
+        "wql": 0.13189053556026037
+      },
+      {
+        "series_id": "web_traffic:Artificial_intelligence",
+        "domain": "web_traffic",
+        "origin": "2024-11-27 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 2.4488296673829395,
+        "crps": 2989.2095238095235,
+        "wql": 0.27804383260692395
+      },
+      {
+        "series_id": "web_traffic:Artificial_intelligence",
+        "domain": "web_traffic",
+        "origin": "2025-06-14 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.37384755520271024,
+        "crps": 486.664126984127,
+        "wql": 0.053265092506451873
+      },
+      {
+        "series_id": "web_traffic:Artificial_intelligence",
+        "domain": "web_traffic",
+        "origin": "2025-12-31 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.0186533468570809,
+        "crps": 1156.4660317460316,
+        "wql": 0.11074078633975216
+      },
+      {
+        "series_id": "web_traffic:Artificial_intelligence",
+        "domain": "web_traffic",
+        "origin": "2026-07-19 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.5525802945728806,
+        "crps": 648.271746031746,
+        "wql": 0.0633228056629254
+      }
+    ],
+    "chronos-bolt-small": [
+      {
+        "series_id": "weather:berlin:t2m_mean",
+        "domain": "weather",
+        "origin": "2024-11-27 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.3232754282843664,
+        "crps": 1.2459416313776892,
+        "wql": 0.3272642183731266
+      },
+      {
+        "series_id": "weather:berlin:t2m_mean",
+        "domain": "weather",
+        "origin": "2025-06-14 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.634298097243866,
+        "crps": 1.887620965261308,
+        "wql": 0.08940018103402679
+      },
+      {
+        "series_id": "weather:berlin:t2m_mean",
+        "domain": "weather",
+        "origin": "2025-12-30 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.3698584923623098,
+        "crps": 3.9199245740496917,
+        "wql": 0.9817342403702272
+      },
+      {
+        "series_id": "weather:berlin:t2m_mean",
+        "domain": "weather",
+        "origin": "2026-07-18 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.0691239967892952,
+        "crps": 3.2271644440908283,
+        "wql": 0.16592105111006825
+      },
+      {
+        "series_id": "weather:nyc:t2m_mean",
+        "domain": "weather",
+        "origin": "2024-11-27 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.2463447729808341,
+        "crps": 3.3168706121898834,
+        "wql": 1.0977822357129636
+      },
+      {
+        "series_id": "weather:nyc:t2m_mean",
+        "domain": "weather",
+        "origin": "2025-06-14 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.3072777236077269,
+        "crps": 4.201776661948553,
+        "wql": 0.1691341957081073
+      },
+      {
+        "series_id": "weather:nyc:t2m_mean",
+        "domain": "weather",
+        "origin": "2025-12-30 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.9860183730934494,
+        "crps": 2.6344635743943474,
+        "wql": 0.7732178205769574
+      },
+      {
+        "series_id": "weather:nyc:t2m_mean",
+        "domain": "weather",
+        "origin": "2026-07-18 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.6886708911801438,
+        "crps": 1.973103732154483,
+        "wql": 0.08396186094274397
+      },
+      {
+        "series_id": "crypto:BTC-USD:close",
+        "domain": "crypto_fx",
+        "origin": "2024-11-27 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 7.518309291170908,
+        "crps": 3841.8325124007947,
+        "wql": 0.03939201151866766
+      },
+      {
+        "series_id": "crypto:BTC-USD:close",
+        "domain": "crypto_fx",
+        "origin": "2025-06-15 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 3.7656854593337563,
+        "crps": 2466.7631498015876,
+        "wql": 0.023436207767171802
+      },
+      {
+        "series_id": "crypto:BTC-USD:close",
+        "domain": "crypto_fx",
+        "origin": "2026-01-01 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 3.8206218083409307,
+        "crps": 2755.0413293650786,
+        "wql": 0.029992985705544307
+      },
+      {
+        "series_id": "crypto:BTC-USD:close",
+        "domain": "crypto_fx",
+        "origin": "2026-07-21 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.8273484848720665,
+        "crps": 1406.5731944444442,
+        "wql": 0.02190332457526487
+      },
+      {
+        "series_id": "fx:EURUSD",
+        "domain": "crypto_fx",
+        "origin": "2024-11-27 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 1.567391224164519,
+        "crps": 0.004329994863177101,
+        "wql": 0.004113283579719861
+      },
+      {
+        "series_id": "fx:EURUSD",
+        "domain": "crypto_fx",
+        "origin": "2025-06-16 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 3.1024029821745303,
+        "crps": 0.007687154448978489,
+        "wql": 0.006611143604836953
+      },
+      {
+        "series_id": "fx:EURUSD",
+        "domain": "crypto_fx",
+        "origin": "2025-12-24 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 2.7369544329328663,
+        "crps": 0.00651888995700411,
+        "wql": 0.005572585355310216
+      },
+      {
+        "series_id": "fx:EURUSD",
+        "domain": "crypto_fx",
+        "origin": "2026-07-14 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.8005639356388369,
+        "crps": 0.003073452987368148,
+        "wql": 0.002692114910321156
+      },
+      {
+        "series_id": "web_traffic:Bitcoin",
+        "domain": "web_traffic",
+        "origin": "2024-11-27 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 3.6355284846556035,
+        "crps": 4696.556504216271,
+        "wql": 0.35458325365913357
+      },
+      {
+        "series_id": "web_traffic:Bitcoin",
+        "domain": "web_traffic",
+        "origin": "2025-06-14 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.13380086308707595,
+        "crps": 212.98944421192954,
+        "wql": 0.044515223094230255
+      },
+      {
+        "series_id": "web_traffic:Bitcoin",
+        "domain": "web_traffic",
+        "origin": "2025-12-31 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.3776403468032784,
+        "crps": 393.1096319289434,
+        "wql": 0.1027775985471952
+      },
+      {
+        "series_id": "web_traffic:Bitcoin",
+        "domain": "web_traffic",
+        "origin": "2026-07-19 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.19201309087094628,
+        "crps": 203.47964680989583,
+        "wql": 0.0874080284538229
+      },
+      {
+        "series_id": "web_traffic:Artificial_intelligence",
+        "domain": "web_traffic",
+        "origin": "2024-11-27 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 2.232506355733139,
+        "crps": 2568.247603546627,
+        "wql": 0.23888770629353656
+      },
+      {
+        "series_id": "web_traffic:Artificial_intelligence",
+        "domain": "web_traffic",
+        "origin": "2025-06-14 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.3557685953425077,
+        "crps": 386.5379929315476,
+        "wql": 0.04230634807284379
+      },
+      {
+        "series_id": "web_traffic:Artificial_intelligence",
+        "domain": "web_traffic",
+        "origin": "2025-12-31 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.698098465648858,
+        "crps": 746.3795534164186,
+        "wql": 0.07147175652747474
+      },
+      {
+        "series_id": "web_traffic:Artificial_intelligence",
+        "domain": "web_traffic",
+        "origin": "2026-07-19 00:00:00",
+        "cutoff_after_release": true,
+        "mase": 0.5710860400372793,
+        "crps": 585.9953473772323,
+        "wql": 0.05723968340204324
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+data/
+results/*
+!results/pilot.json
+.venv/
+__pycache__/
+*.pyc

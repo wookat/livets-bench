@@ -1,0 +1,97 @@
+# LiveTS 数据源配置（M0）
+# 所有路径均相对 data_root（可用环境变量 LIVETS_DATA_ROOT 覆盖），无硬编码绝对路径。
+data_root: ./data
+
+sources:
+  # ---------- 域 1：能源（电网需求） ----------
+  - id: neso_uk_demand
+    domain: energy
+    parser: neso_demand
+    freq: 30min
+    enabled: true
+    description: 英国 NESO 电网历史需求（Historic Demand Data，CKAN datastore，免 key）
+    url: "https://api.neso.energy/api/3/action/datastore_search_sql"
+    params:
+      sql: "SELECT * FROM \"177f6fa4-ae49-4182-81ea-0c6b35f26ca6\" ORDER BY _id DESC LIMIT 400"
+
+  - id: smard_de_price   # 冗余备选（德国 SMARD，免 key）
+    domain: energy
+    parser: smard
+    freq: 1h
+    enabled: false
+    description: 德国 SMARD 日前电价（backup）
+    url: "https://www.smard.de/app/chart_data/4169/DE/index_hour.json"
+    params: {}
+
+  # ---------- 域 2：气象 ----------
+  - id: openmeteo_weather
+    domain: weather
+    parser: open_meteo
+    freq: 1h
+    enabled: true
+    description: Open-Meteo 多站点小时级气温/风速/降水（免 key）
+    url: "https://api.open-meteo.com/v1/forecast"
+    params:
+      latitude: "52.52,40.71,39.90,35.68,-33.87"
+      longitude: "13.41,-74.01,116.40,139.69,151.21"
+      hourly: "temperature_2m,wind_speed_10m,precipitation"
+      past_days: 2
+      forecast_days: 1
+
+  # ---------- 域 3：加密货币 / 外汇 ----------
+  - id: coinbase_btc_usd
+    domain: crypto_fx
+    parser: coinbase_candles
+    freq: 1d
+    enabled: true
+    description: Coinbase Exchange BTC-USD 日线 OHLCV（免 key；Binance 备选在部分地区受限）
+    url: "https://api.exchange.coinbase.com/products/BTC-USD/candles"
+    params:
+      granularity: 86400
+
+  - id: frankfurter_fx
+    domain: crypto_fx
+    parser: frankfurter
+    freq: 1d
+    enabled: true
+    description: Frankfurter（ECB 参考汇率）每日多币种汇率（免 key）
+    url: "https://api.frankfurter.dev/v1/latest"
+    params: {}
+
+  # ---------- 域 4：空气质量 ----------
+  - id: openmeteo_air_quality
+    domain: air_quality
+    parser: open_meteo
+    freq: 1h
+    enabled: true
+    description: Open-Meteo Air Quality 多城市 PM2.5/PM10/O3（免 key；OpenAQ 为备选）
+    url: "https://air-quality-api.open-meteo.com/v1/air-quality"
+    params:
+      latitude: "39.90,28.61,51.51,34.05"
+      longitude: "116.40,77.21,-0.13,-118.24"
+      hourly: "pm2_5,pm10,ozone"
+      past_days: 2
+      forecast_days: 1
+
+  # ---------- 域 5：交通 ----------
+  - id: mta_daily_ridership
+    domain: traffic
+    parser: socrata
+    freq: 1d
+    enabled: true
+    description: 纽约 MTA 每日客流（Socrata 开放数据，免 key）
+    url: "https://data.ny.gov/resource/vxuj-8kew.json"
+    params:
+      "$order": "date DESC"
+      "$limit": 60
+
+  # ---------- 域 6：网络流量 ----------
+  - id: wikimedia_pageviews
+    domain: web_traffic
+    parser: wikimedia
+    freq: 1d
+    enabled: true
+    description: Wikimedia 每日页面访问量（多条目，免 key，需 UA）
+    url: "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/{article}/daily/{start_ymd}/{end_ymd}"
+    params:
+      articles: ["Bitcoin", "Artificial_intelligence", "Climate_change", "Electric_vehicle"]
