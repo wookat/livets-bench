@@ -27,6 +27,9 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 15 2 * * * cd /opt/livets-bench && .venv/bin/python scripts/run_collect.py >> logs/cron.log 2>&1
 ```
 
+## 论文阶段评测矩阵
+7 模型（6 TSFM + seasonal naive）× 25 序列 × 6 域 × 3 滚动 cutoff（2025-01-01 / 2025-07-01 / 2026-01-01），全部结果 JSONL 溯源于 `results/matrix.jsonl`（3100 窗口），主表见 `docs/main-table.md`，协议 v1.0 见 `docs/protocol-prereg.md`。复现：`scripts/run_matrix.py` + `scripts/make_table.py`。
+
 ## Pilot 结果（2026-08-03，固定 seed=42，cutoff = Chronos-Bolt 发布日 2024-11-26）
 6 条日频序列（气象×2 / BTC / 外汇 / 页面访问×2）× 4 个发布日之后的 origin，horizon=14：
 
