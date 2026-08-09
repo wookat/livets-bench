@@ -1,6 +1,8 @@
 data/
 results/*
 !results/pilot.json
-.venv/
+!results/matrix.jsonl
+.venv*/
 __pycache__/
 *.pyc
+nohup.out

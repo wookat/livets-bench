@@ -48,6 +48,40 @@ def rolling_origins(values: pd.Series, cfg: EvalConfig) -> list[int]:
     return list(np.unique(np.linspace(start, last, cfg.n_origins, dtype=int)))
 
 
+def origins_for_cutoff(values: pd.Series, cutoff: str, horizon: int,
+                       n_origins: int = 4, window_days: int = 180,
+                       min_context: int = 90) -> list[int]:
+    """Forecast-origin indices inside (cutoff, cutoff + window_days]."""
+    cut = pd.Timestamp(cutoff)
+    start = int(np.searchsorted(values.index, cut, side="right"))
+    end_ts = cut + pd.Timedelta(days=window_days)
+    end = int(np.searchsorted(values.index, end_ts, side="right")) - horizon
+    start = max(start, min_context)
+    if end <= start:
+        return []
+    return sorted(set(np.linspace(start, end, n_origins, dtype=int)))
+
+
+def evaluate_window(model_fn, spec: SeriesSpec, origin: int, horizon: int, seed: int = 0) -> dict:
+    """Single forecast window; model_fn(history, horizon, season_length, seed)."""
+    history = spec.values.iloc[:origin].to_numpy(dtype=float)
+    target = spec.values.iloc[origin:origin + horizon].to_numpy(dtype=float)
+    fc = model_fn(history, horizon, spec.season_length, seed)
+    rec = {
+        "series_id": spec.series_id,
+        "domain": spec.domain,
+        "origin": str(spec.values.index[origin].date()),
+        "seed": seed,
+        "mase": mase(target, fc["point"], history, spec.season_length),
+        "crps": float("nan"),
+        "wql": float("nan"),
+    }
+    if fc.get("quantiles"):
+        rec["crps"] = crps_from_quantiles(target, fc["quantiles"])
+        rec["wql"] = wql(target, fc["quantiles"])
+    return rec
+
+
 def evaluate_model(model_fn, spec: SeriesSpec, cfg: EvalConfig) -> list[dict]:
     """model_fn(history: np.ndarray, horizon: int, season_length: int) -> {point, quantiles}."""
     np.random.seed(cfg.seed)

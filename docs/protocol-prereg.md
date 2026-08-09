@@ -1,39 +1,56 @@
-# LiveTS 评测协议预注册文档（草案 v0.1）
+# LiveTS 评测协议预注册文档（v1.0 定稿）
 
-> 状态：草案（M0）。正式预注册将在 round-0 启动前冻结并公开（OSF / 仓库 tag）。
-> 依据：P1 项目 Spec v0.1（2026-08-01）。本文档一经冻结，任何改动须以带时间戳的 amendment 形式追加，不得回溯修改。
+> 状态：v1.0（2026-08-09 定稿）。冻结后任何改动以带时间戳的 amendment 追加于文末，不得回溯修改。
+> 实现即协议：本文所有参数与 `livets/eval/` + `scripts/run_matrix.py` / `scripts/make_table.py` 一一对应，结果 JSONL 全量溯源（git commit、环境、运行时间戳）。
 
-## 1. 核心主张
-只在**模型权重发布时点之后产生的数据**上评测（future-only / as-of evaluation），从物理上杜绝预训练语料泄漏与 test-set 反复调参。
+## 1. 核心主张（防泄漏时间边界）
+- **future-only / as-of evaluation**：模型 m 的洁净成绩只统计满足 `cutoff > release_date(m)` 的评测窗口。
+- `release_date(m)` 取该权重在公开渠道**最早可证发布时间**（本轮以 HuggingFace Hub 仓库 `createdAt` 为准，UTC 日期）；存疑取更早（保守，宁可少记洁净窗口）。
+- 输入仅允许 origin 之前的观测值；target 为 origin 之后 horizon 步。数据带 `collected_at` 采集时间戳（PIT），live round 中 target 在 cutoff 后才物理存在。
 
-## 2. 数据与轮次
-- 数据层：≥6 域公开实时源（见 `docs/data-sources.md`），VPS cron 逐日采集，原始快照落盘 + `collected_at` 时间戳（PIT 语义）。
-- 滚动轮次：每月一个 evaluation round。round T 的 cutoff = 该月首日 00:00 UTC；输入只用 cutoff 之前采集的数据，target 为 cutoff 之后新产生的数据。
-- 洁净成绩判定：每个模型登记其**权重发布日期**（HF model card / 官方 release 时间为准）；仅 cutoff > 发布日期的 round 记入洁净成绩。发布日期存疑时取最早可证日期（保守）。
-- 论文主实验（历史模拟 live）：用相同协议在历史数据上按各模型发布日期切分（实现见 `scripts/run_pilot_eval.py`），滚动榜单作为持续贡献。
+## 2. 数据
+- 6 域 25 条日频序列（能源 SMARD、气象与空气质量 Open-Meteo、加密/外汇 Coinbase+ECB、交通 NYC MTA、网络流量 Wikimedia），每条 ≥800 点历史；清单见 `docs/data-sources.md`，加载与缓存代码 `livets/eval/data_loaders.py`。
+- 缺失处理：源数据缺失日直接跳过（不填补）；序列内时间索引严格递增去重（保留最早采集值）。
 
-## 3. 任务与协议
-- 任务：单变量点预测 + 概率预测（quantile levels 0.1–0.9）。
-- horizon 档位：短（1×季节）、中（2 周/日频 14 步）、长（4 周）；按域频率映射，预注册后固定。
-- look-back 档位：统一三档（512 / 1024 / 2048 时间步，不足取全量），**禁止 per-dataset 调参**；模型只允许一套全局超参。
-- 缺失值：按各域预注册规则填补（前向填充上限 3 步，否则窗口作废）；不允许模型方自定义。
+## 3. 评测网格（冻结值）
+| 参数 | 值 |
+|---|---|
+| 滚动 cutoff | 2025-01-01, 2025-07-01, 2026-01-01（UTC） |
+| 每 cutoff 评测窗口 | cutoff 后 180 天内均匀取 4 个 origin |
+| horizon | 14 步（日频） |
+| look-back | 模型自身最大 context（≤2048），不做 per-series 调参 |
+| season_length（MASE 尺度） | 周期性域=7（气象/空气/交通/能源/网络），金融=1 |
+| quantile 档位 | 0.1–0.9 共 9 档 |
+| seeds | 采样型模型 {0,1,2}；确定性模型 seed=0 并标注 |
+
+**禁止 per-dataset 调参**：所有模型全域一套推理配置。
 
 ## 4. 指标与聚合
-- 点预测：MASE（scale = in-sample seasonal naive MAE，season_length 按域预注册）。
-- 概率预测：CRPS（分位数近似，9 档 pinball×2）与 WQL。
-- 聚合：先对每条序列跨 origin 取平均，再跨序列取**几何平均**；报告 bootstrap（≥1000 次重采样）95% CI。
-- 显著性：模型两两比较用配对 bootstrap + Diebold-Mariano；报告多重比较校正（Holm）。
-- 多 seed：非确定性模型 ≥3 seeds，报告均值±std；确定性模型注明。
+- **MASE**：scale = 全部 origin 前历史的 in-sample seasonal-naive MAE（season_length 如上）。
+- **CRPS**：9 档分位数 pinball 均值 ×2（分位数近似）。**WQL**：2·mean_q(pinball 总和)/Σ|y|。
+- point-only 模型（如 Time-MoE）只记 MASE，CRPS/WQL 记缺失（不以点预测冒充分位数）。
+- 聚合：序列内先对 origin×seed 取算术平均 → 跨序列**几何平均**；95% CI 为跨序列 bootstrap（B=1000，seed=12345）。
+- 显著性：模型两两比较用逐窗口配对差值的 bootstrap 检验 + Diebold-Mariano（HLN 小样本校正），多重比较 Holm 校正，α=0.05。
 
-## 5. 基线与评测对象
-- 统计基线：seasonal naive、AutoETS/AutoARIMA。
-- 监督基线：DLinear、PatchTST、iTransformer（统一协议下重训，仅用 cutoff 前数据）。
-- TSFM（零样本）：Chronos-2、Chronos-Bolt、TimesFM、Moirai、Time-MoE、TiRex、Toto（登记各自权重发布日期）。
+## 5. 评测对象与发布日期登记（本轮）
+| 模型 | 权重 | release_date（HF createdAt） | 洁净 cutoff |
+|---|---|---|---|
+| seasonal naive | — | — | 全部 |
+| chronos-bolt-small / base | amazon/chronos-bolt-* | 2024-11-25 | 全部 3 个 |
+| chronos-t5-small | amazon/chronos-t5-small | 2024-02-21 | 全部 3 个 |
+| Time-MoE-50M | Maple728/TimeMoE-50M | 2024-09-21 | 全部 3 个 |
+| Moirai-1.1-R-small | Salesforce/moirai-1.1-R-small | 2024-06-14 | 全部 3 个 |
+| TimesFM-2.5-200M | google/timesfm-2.5-200m-pytorch | 2025-09-02 | 仅 2026-01-01 |
 
 ## 6. 防作弊与公开性
-- 每轮 target 数据在 cutoff 后才存在，物理上不可提前获取；原始快照哈希入库（后续上 R2）以供审计。
-- 提交 API 只接受预测文件，评测代码开源、结果可复现（固定 seed、记录环境与版本）。
-- 每模型每轮只允许一次提交；协议冻结后新增模型须登记发布日期方可参评。
+- 每轮 live target 在 cutoff 后才产生；原始快照落盘并计划哈希入库（R2）供审计。
+- 评测代码、数据加载、聚合脚本全部开源；每条结果记录 git commit + 环境版本 + 运行时间戳。
+- live round 中每模型每轮一次提交；新模型须先登记 release_date。
+- 协议冻结后新增模型/数据域不改动已有结果，只能扩表。
 
 ## 7. 与 P2 的衔接
-每个模型的"老基准成绩 vs LiveTS 洁净成绩"差值，结合 P2 污染审计结论给出污染增益估计。
+模型在老基准（ETT/Monash/GIFT-Eval）成绩与 LiveTS 洁净成绩的差值，联合 P2 污染审计给出污染增益估计。
+
+---
+## Amendments
+（无）
