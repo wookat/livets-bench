@@ -57,7 +57,9 @@ Snapshots and manifests live in object storage (Cloudflare R2); a monthly evalua
 
 ### 4.2 Main results
 
-*The main table is generated from `results/matrix*.jsonl` by `scripts/make_table.py` and lives in `docs/main-table.md`; the 25-series pilot ranking (geo-MASE: TimesFM-2.5 < Chronos-Bolt-base < Chronos-Bolt-small < Time-MoE-50M < Chronos-T5-small < Moirai-1.1-R-small < AutoETS < seasonal naive) is being recomputed on the expanded 205-series set — numbers in the camera-ready will come from the expanded run only.*
+*The main table is generated from `results/matrix-expanded-all.jsonl` (50,284 windows, 205 series, 11 models) by `scripts/make_table.py` and lives in `docs/main-table.md`; pairwise significance in `docs/significance.md`.*
+
+Expanded-run geo-MASE ordering (see `docs/main-table.md` for values and CIs): TimesFM-2.5 (clean subset only) < Chronos-Bolt-small ≈ Bolt-base < Chronos-T5-small < Moirai-1.1-R-small < Time-MoE-50M < PatchTST < AutoETS < seasonal naive < DLinear < iTransformer. Supervised baselines were retrained pre-cutoff with a fixed generic configuration; PatchTST is competitive with weaker TSFMs while DLinear/iTransformer underperform under this no-tuning regime (iTransformer runs in univariate mode, `n_series=1` — a conservative configuration noted as a limitation).
 
 Observations stable across the pilot and expanded runs:
 
