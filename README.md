@@ -28,7 +28,9 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 ```
 
 ## 论文阶段评测矩阵
-7 模型（6 TSFM + seasonal naive）× 25 序列 × 6 域 × 3 滚动 cutoff（2025-01-01 / 2025-07-01 / 2026-01-01），全部结果 JSONL 溯源于 `results/matrix.jsonl`（3100 窗口），主表见 `docs/main-table.md`，协议 v1.0 见 `docs/protocol-prereg.md`。复现：`scripts/run_matrix.py` + `scripts/make_table.py`。
+8 模型（6 TSFM + seasonal naive + AutoETS）× 25 序列 × 6 域 × 3 滚动 cutoff（2025-01-01 / 2025-07-01 / 2026-01-01），全部结果 JSONL 溯源于 `results/matrix.jsonl`（3400 窗口），主表见 `docs/main-table.md`，协议 v1.0 见 `docs/protocol-prereg.md`。复现：`scripts/run_matrix.py` + `scripts/make_table.py`，显著性检验 `scripts/significance.py`。
+
+复现注记：Moirai 的 900 窗口在 xu-4 RTX 3090 上直跑（未经 sgpu 调度器，属一次性例外，环境记录于 JSONL；xu-4 需 `HF_ENDPOINT=https://hf-mirror.com`）；其余模型在本机 CPU 完成。今后 GPU 任务统一经 `dell@xu-1` 的 `/home/dell/.local/bin/sgpu submit` 排队。
 
 ## Pilot 结果（2026-08-03，固定 seed=42，cutoff = Chronos-Bolt 发布日 2024-11-26）
 6 条日频序列（气象×2 / BTC / 外汇 / 页面访问×2）× 4 个发布日之后的 origin，horizon=14：

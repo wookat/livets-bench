@@ -23,6 +23,25 @@ def _seasonal_naive_factory():
     return fn
 
 
+def _autoets_factory():
+    from statsforecast.models import AutoETS
+
+    def fn(history, horizon, season_length, seed=0):
+        x = np.asarray(history, dtype=np.float64)[-1024:]
+        model = AutoETS(season_length=season_length)
+        fitted = model.fit(x)
+        levels = sorted({round(abs(2 * lev - 1) * 100) for lev in QUANTILE_LEVELS if lev != 0.5})
+        pred = fitted.predict(h=horizon, level=levels)
+        quantiles = {0.5: pred["mean"]}
+        for lev in QUANTILE_LEVELS:
+            if lev == 0.5:
+                continue
+            conf = round(abs(2 * lev - 1) * 100)
+            quantiles[lev] = pred[f"{'hi' if lev > 0.5 else 'lo'}-{conf}"]
+        return {"point": pred["mean"], "quantiles": quantiles}
+    return fn
+
+
 def _chronos_factory(model_name: str, sampling: bool):
     from chronos import BaseChronosPipeline
     import torch
@@ -101,6 +120,8 @@ def _moirai_factory(model_name: str = "Salesforce/moirai-1.1-R-small", num_sampl
 
 
 MODEL_ZOO: dict[str, dict] = {
+    "autoets": {"release_date": None, "deterministic": True,
+                "factory": _autoets_factory},
     "seasonal_naive": {"release_date": None, "deterministic": True,
                        "factory": _seasonal_naive_factory},
     "chronos-bolt-small": {"release_date": "2024-11-25", "deterministic": True,
