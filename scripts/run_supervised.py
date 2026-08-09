@@ -122,7 +122,8 @@ def main() -> int:
                             point = quantiles[0.5]
                             rec = {
                                 "model": model_name, "release_date": cutoff, "domain": spec.domain,
-                                "series_id": spec.series_id, "cutoff": cutoff, "origin": int(origin),
+                                "series_id": spec.series_id, "cutoff": cutoff,
+                                "origin": str(spec.values.index[origin].date()),
                                 "seed": seed, "horizon": args.horizon,
                                 "mase": float(mase(y_true, point, hist.values, spec.season_length)),
                                 "crps": float(crps_from_quantiles(y_true, quantiles)),
