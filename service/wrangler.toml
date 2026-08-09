@@ -1,0 +1,8 @@
+name = "livets-leaderboard"
+main = "src/index.js"
+compatibility_date = "2026-07-01"
+account_id = "ddff52d24ee44e21a021c15eaffcc86d"
+
+[[r2_buckets]]
+binding = "SNAPSHOTS"
+bucket_name = "livets-snapshots"
