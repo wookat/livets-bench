@@ -1,0 +1,17 @@
+\begin{tabular}{lccccc}
+\toprule
+Model & Release & geo-MASE [95\% CI] & geo-WQL & Series & Windows \\
+\midrule
+timesfm-2.5-200m$^{\dagger}$ & 2025-09-02 & 0.789 [0.711, 0.873] & 0.120 & 205 & 820 \\
+chronos-bolt-small & 2024-11-25 & 0.893 [0.817, 0.976] & 0.127 & 207 & 2484 \\
+chronos-bolt-base & 2024-11-25 & 0.895 [0.826, 0.980] & 0.127 & 207 & 2484 \\
+chronos-t5-small & 2024-02-21 & 0.956 [0.877, 1.048] & 0.132 & 205 & 7380 \\
+moirai-1.1-r-small & 2024-06-14 & 0.965 [0.880, 1.051] & 0.140 & 205 & 7380 \\
+time-moe-50m & 2024-09-21 & 1.004 [0.923, 1.111] & --- & 205 & 2460 \\
+patchtst & per-cutoff & 1.099 [1.019, 1.185] & 0.179 & 207 & 7452 \\
+autoets & --- & 1.133 [1.050, 1.223] & 0.212 & 205 & 2460 \\
+seasonal\_naive & --- & 1.181 [1.092, 1.268] & 0.200 & 205 & 2460 \\
+dlinear & per-cutoff & 1.597 [1.428, 1.788] & 0.334 & 207 & 7452 \\
+itransformer & per-cutoff & 4.220 [3.860, 4.627] & 0.933 & 207 & 7452 \\
+\bottomrule
+\end{tabular}
