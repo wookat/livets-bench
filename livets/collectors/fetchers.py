@@ -80,14 +80,16 @@ def socrata(source: dict) -> tuple[Any, list[dict]]:
         date = row.get("date")
         if not date:
             continue
+        mode = row.get("mode")
         for col, val in row.items():
-            if col == "date":
+            if col in ("date", "mode"):
                 continue
+            key = f"{mode}:{col}" if mode else col
             try:
                 v = float(val)
             except (TypeError, ValueError):
                 continue
-            records.append({"series_id": f"{source['id']}:{col}", "timestamp": date, "value": v, "variable": col})
+            records.append({"series_id": f"{source['id']}:{key}", "timestamp": date, "value": v, "variable": key})
     return raw, records
 
 

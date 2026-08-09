@@ -79,11 +79,12 @@ sources:
     parser: socrata
     freq: 1d
     enabled: true
-    description: 纽约 MTA 每日客流（Socrata 开放数据，免 key）
-    url: "https://data.ny.gov/resource/vxuj-8kew.json"
+    description: 纽约 MTA 每日客流（Socrata 开放数据 sayj-mze2 后继数据集，免 key）
+    url: "https://data.ny.gov/resource/sayj-mze2.json"
     params:
       "$order": "date DESC"
-      "$limit": 60
+      "$limit": 240
+      "$select": "date,mode,count"
 
   # ---------- 域 6：网络流量 ----------
   - id: wikimedia_pageviews
