@@ -133,9 +133,30 @@ Supervised baselines were retrained pre-cutoff with a fixed generic configuratio
 
 Figure~\ref{fig:cutoff} shows per-cutoff scores: mid-table rankings (Chronos-T5 vs.\ Moirai vs.\ Time-MoE vs.\ PatchTST) reorder across cutoffs, while the top (Chronos-Bolt) and bottom are stable. Seed variance for sampling models is small relative to cross-series dispersion. This is quantitative evidence that a single static split materially misranks models --- and an argument for rolling evaluation as the default.
 
-\subsection{Clean vs.\ legacy scores (contamination gain)}
+\subsection{Clean scores vs.\ post-hoc contamination signals}\label{sec:contamination}
 
-For each TSFM we will contrast its published results on legacy benchmarks with its LiveTS clean score relative to identical baselines; this analysis is being developed jointly with a companion contamination-audit project and is deferred to the camera-ready.
+A companion contamination audit\footnote{\url{https://github.com/wookat/tsfm-contamination-audit}; 8 TSFMs $\times$ 14 datasets, member vs.\ non-member skill probes with permutation tests and Holm correction.} probes the same model families post hoc: for each TSFM it contrasts forecasting skill on \emph{member} datasets (documented in the model's pretraining corpus) against \emph{non-member} datasets. Table~\ref{tab:contamination} places its skill-probe results next to our clean LiveTS scores.
+
+\begin{table}[t]
+  \caption{LiveTS clean skill vs.\ post-hoc audit signals. skill$_{\text{live}}$ = geo-MASE(model)/geo-MASE(seasonal naive) on shared clean windows (lower is better). Audit columns: mean skill on member vs.\ non-member datasets and Holm-corrected permutation $p$; a positive member$-$non-member gap is directionally consistent with contamination-inflated legacy scores. $^{a}$audited checkpoint differs from the one we evaluate (Moirai-1.0-R-small; TimesFM-2.0-500M) --- directional reference only.}
+  \label{tab:contamination}
+  \centering
+  \small
+  \begin{tabular}{lcccc}
+    \toprule
+    Model & skill$_{\text{live}}$ & Audit member & Audit non-member & Holm $p$ \\
+    \midrule
+    Chronos-Bolt-small & 0.754 & 0.297 & $-0.673$ & 0.86 \\
+    Chronos-Bolt-base & 0.756 & 0.323 & $-1.088$ & 0.62 \\
+    Chronos-T5-small & 0.809 & 0.253 & $-0.108$ & 1.00 \\
+    Time-MoE-50M & 0.850 & $-0.382$ & 0.173 & 1.00 \\
+    Moirai-1.1-R-small & 0.817 & $-0.216^{a}$ & $0.026^{a}$ & 1.00 \\
+    TimesFM-2.5-200M & 0.707 & $0.417^{a}$ & $-0.134^{a}$ & 0.24 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The audit finds member-dataset skill consistently higher for the Chronos family and TimesFM (Cliff's $\delta$ 0.47--0.85), directionally consistent with contamination-inflated legacy scores, but no effect survives Holm correction at the audit's sample size --- post-hoc detection is statistically underpowered even when the direction is consistent. This is precisely the argument for LiveTS: rather than trying to detect contamination after the fact, future-only evaluation makes it impossible. The two approaches are complementary; LiveTS clean scores are currently the only scores for these models that the contamination question cannot touch.
 
 \section{The Live Benchmark}\label{sec:live}
 

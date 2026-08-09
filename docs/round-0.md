@@ -36,6 +36,19 @@
 - 仅接受分位数预测（9 档 0.1–0.9）；纯点预测模型提交 `{"0.5": [...]}`，只计 MASE。
 - 提交时 target 尚未产生：物理防泄漏。输入数据以 R2 上 cutoff 时点快照（SHA-256 manifest）为准。
 
+## 快照冻结（自动化）
+
+cutoff 日运行 `scripts/freeze_round.py --round 2026-09 --cutoff 2026-09-01`：
+从本地采集缓存导出严格 cutoff 前的全部序列 CSV + `manifest.json`（逐文件 sha256、
+序列清单、协议引用、git commit），上传至 `r2://livets-snapshots/rounds/<round>/`；
+已冻结 round 拒绝覆盖（不可变）。参赛者只从该快照取输入。
+
+cron（本机，UTC）：
+
+```cron
+30 0 1 * * . $HOME/.livets_r2.env && cd $HOME/repos/livets-bench && .venv/bin/python scripts/freeze_round.py --round $(date -u +\%Y-\%m) --cutoff $(date -u +\%Y-\%m-01) >> data/logs/freeze.log 2>&1
+```
+
 ## 反作弊
 
 - 每模型每 round 一次提交；重复提交拒绝。

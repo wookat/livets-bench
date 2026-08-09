@@ -48,6 +48,9 @@ Dedup key: `(model, series_id, cutoff, origin, seed)`.
 # figures                        -> docs/figures/*.{pdf,png}
 .venv/bin/python scripts/make_figures.py
 
+# freeze a live round snapshot   -> r2://livets-snapshots/rounds/<round>/
+.venv/bin/python scripts/freeze_round.py --round 2026-09 --cutoff 2026-09-01
+
 # paper
 cd paper && pdflatex main && bibtex main && pdflatex main && pdflatex main
 ```
