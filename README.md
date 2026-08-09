@@ -28,9 +28,17 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt
 ```
 
 ## 论文阶段评测矩阵
-8 模型（6 TSFM + seasonal naive + AutoETS）× 25 序列 × 6 域 × 3 滚动 cutoff（2025-01-01 / 2025-07-01 / 2026-01-01），全部结果 JSONL 溯源于 `results/matrix.jsonl`（3400 窗口），主表见 `docs/main-table.md`，协议 v1.0 见 `docs/protocol-prereg.md`。复现：`scripts/run_matrix.py` + `scripts/make_table.py`，显著性检验 `scripts/significance.py`。
 
-复现注记：Moirai 的 900 窗口在 xu-4 RTX 3090 上直跑（未经 sgpu 调度器，属一次性例外，环境记录于 JSONL；xu-4 需 `HF_ENDPOINT=https://hf-mirror.com`）；其余模型在本机 CPU 完成。今后 GPU 任务统一经 `dell@xu-1` 的 `/home/dell/.local/bin/sgpu submit` 排队。
+### 扩容矩阵（当前主表来源，协议 amendment A1）
+11 模型（6 TSFM + 3 监督基线 + seasonal naive + AutoETS）× **205 序列** × 6 域 × 3 滚动 cutoff（2025-01-01 / 2025-07-01 / 2026-01-01），共 **50,284 窗口**，合并去重于 `results/matrix-expanded-all.jsonl`（分片：`matrix-expanded*.jsonl`、`results/gpu/*.jsonl`、`matrix-supervised.jsonl`）。主表 `docs/main-table.md`，显著性 `docs/significance.md`，协议 v1.0+A1 `docs/protocol-prereg.md`。
+- 零样本 TSFM：`scripts/run_matrix.py`（GPU 侧经 `dell@xu-1` sgpu 调度，launch 脚本 `ops/sgpu/`，回传经 sha256 校验）。
+- 监督基线 DLinear/PatchTST/iTransformer：`scripts/run_supervised.py`，每个 cutoff 用严格早于 cutoff 的数据重训全局模型（MQ 分位损失，seeds {0,1,2}）。
+- 已知注记：iTransformer 以 `n_series=1` 单变量方式接入（与其多变量设计不符，成绩偏弱属配置保守而非调参结论，论文中将注明）。
+
+### 25 序列 pilot（保留）
+8 模型 × 25 序列 × 3 cutoff，`results/matrix.jsonl`（3400 窗口）。
+
+复现注记：pilot 中 Moirai 的 900 窗口在 xu-4 RTX 3090 上直跑（未经 sgpu 调度器，属一次性例外，环境记录于 JSONL；xu-4 需 `HF_ENDPOINT=https://hf-mirror.com`）；扩容矩阵 GPU 任务已全部改为经 `dell@xu-1` 的 `/home/dell/.local/bin/sgpu submit` 排队执行。
 
 ## Pilot 结果（2026-08-03，固定 seed=42，cutoff = Chronos-Bolt 发布日 2024-11-26）
 6 条日频序列（气象×2 / BTC / 外汇 / 页面访问×2）× 4 个发布日之后的 origin，horizon=14：

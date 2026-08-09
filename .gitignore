@@ -2,6 +2,7 @@ data/
 results/*
 !results/pilot.json
 !results/matrix.jsonl
+!results/matrix-expanded-all.jsonl
 .venv*/
 __pycache__/
 *.pyc
