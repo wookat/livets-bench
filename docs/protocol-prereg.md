@@ -53,4 +53,8 @@
 
 ---
 ## Amendments
-（无）
+
+### A1（2026-08-09，扩表，不改已有结果）
+- **序列扩容**：评测序列集从 25 条扩至 **205 条**（weather 80 / web_traffic 58 / crypto_fx 34 / air_quality 20 / traffic 7 / energy 6），仍为 6 域日频、每条 ≥800 点（外汇 ≥700，交易日历）；加载配置见 `livets/eval/data_loaders.py`。评测网格、指标、聚合、seeds 等冻结值不变。
+- **监督基线**：新增 DLinear / PatchTST / iTransformer（`scripts/run_supervised.py`）。每个 cutoff 用**严格早于 cutoff** 的观测重训全局模型（MQ 分位数损失，9 档分位，input_size=96，max_steps=1000，seeds {0,1,2}），预测窗口与零样本模型相同；对监督基线定义 `release_date := cutoff`（每个 cutoff 均为洁净窗口）。
+- 25 序列 pilot 结果（`results/matrix.jsonl`）保留不动；扩容结果写入独立 `results/matrix-expanded*.jsonl` 与 `results/matrix-supervised.jsonl`。
