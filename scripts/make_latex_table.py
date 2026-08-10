@@ -52,19 +52,40 @@ def main() -> int:
                      "n_cutoffs": g.cutoff.nunique()})
     t = pd.DataFrame(rows).sort_values("gm")
 
+    def rank_marks(values):
+        finite = [(i, v) for i, v in enumerate(values) if np.isfinite(v)]
+        order = sorted(finite, key=lambda x: x[1])
+        marks = {}
+        if len(order) > 0:
+            marks[order[0][0]] = "bold"
+        if len(order) > 1:
+            marks[order[1][0]] = "underline"
+        return marks
+
+    def fmt(v, mark, text):
+        if mark == "bold":
+            return rf"\textbf{{{text}}}"
+        if mark == "underline":
+            return rf"\underline{{{text}}}"
+        return text
+
+    gm_marks = rank_marks(t["gm"].to_numpy())
+    wql_marks = rank_marks(t["wql"].to_numpy())
+
     lines = [
         r"\begin{tabular}{lccccc}",
         r"\toprule",
         r"Model & Release & geo-MASE [95\% CI] & geo-WQL & Series & Windows \\",
         r"\midrule",
     ]
-    for _, r in t.iterrows():
+    for i, (_, r) in enumerate(t.iterrows()):
         name = r.model.replace("_", r"\_")
         star = r"$^{\dagger}$" if r.n_cutoffs < 3 else ""
-        wql_s = f"{r.wql:.3f}" if np.isfinite(r.wql) else "---"
+        gm_s = fmt(r.gm, gm_marks.get(i), f"{r.gm:.3f} [{r.lo:.3f}, {r.hi:.3f}]")
+        wql_s = fmt(r.wql, wql_marks.get(i), f"{r.wql:.3f}") if np.isfinite(r.wql) else "---"
         lines.append(
             f"{name}{star} & {RELEASE.get(r.model, '?')} & "
-            f"{r.gm:.3f} [{r.lo:.3f}, {r.hi:.3f}] & {wql_s} & "
+            f"{gm_s} & {wql_s} & "
             f"{r.n_series} & {r.n_windows} \\\\")
     lines += [r"\bottomrule", r"\end{tabular}"]
     (outdir / "main_table.tex").write_text("\n".join(lines) + "\n")
@@ -76,8 +97,11 @@ def main() -> int:
     cols = list(dom.columns)
     lines = [r"\begin{tabular}{l" + "c" * len(cols) + "}", r"\toprule",
              "Model & " + " & ".join(c.replace("_", r"\_") for c in cols) + r" \\", r"\midrule"]
+    col_marks = {c: rank_marks(dom[c].to_numpy()) for c in cols}
+    row_pos = {m: i for i, m in enumerate(dom.index)}
     for model, r in dom.iterrows():
-        cells = " & ".join(f"{v:.2f}" for v in r)
+        cells = " & ".join(
+            fmt(r[c], col_marks[c].get(row_pos[model]), f"{r[c]:.2f}") for c in cols)
         lines.append(f"{model.replace('_', chr(92) + '_')} & {cells} \\\\")
     lines += [r"\bottomrule", r"\end{tabular}"]
     (outdir / "domain_table.tex").write_text("\n".join(lines) + "\n")
