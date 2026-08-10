@@ -1,8 +1,8 @@
 # livets-bench
 
-LiveTS：防泄漏动态时序预测基准（P1 · M0 工程实现）。
+LiveTS：按模型发布日分层的回溯评测基准（release-date-stratified retrospective evaluation）。
 
-核心主张：**只在模型权重发布时点之后产生的数据上评测**（future-only / as-of evaluation），物理上杜绝 TSFM 预训练泄漏与静态 test set 过拟合。
+核心主张：**只在模型权重发布时点之后产生的数据上评测**——对权重冻结的模型，在已归档的多域历史上按发布日分层回放，等价于一个从各模型发布日起就在运行的 live 平台，且今天即可一次性给出所有历史模型的洁净成绩。与并行的 live 平台（Impermanent [arXiv:2603.08707]、TS-Arena [arXiv:2512.20761]）互补：它们只能评「从现在起」的未来数据且各自单域（GitHub 活动 / 能源），LiveTS 提供 6 域回溯分层 + 月度 live track 衔接。
 
 ## 结构
 - `configs/sources.yaml` — 数据源配置（6 域 7 源，全部免 key；配置化、无硬编码路径）

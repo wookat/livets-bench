@@ -2,6 +2,8 @@
 
 研究工程师 · 2026-08-03 ｜ 基于 P1 项目 Spec v0.1 与课题组方向 6 调研报告
 
+> **重定位注记（2026-08-10 撞车核查后）**：Impermanent（arXiv:2603.08707，GitHub 活动单域，impermanent.timecopilot.dev）与 TS-Arena（arXiv:2512.20761，能源单域，forecast pre-registration，ts-arena.live）两个 live 防泄漏平台已上线运行。LiveTS 立论已从「第一个防泄漏动态基准」重定位为「**按模型发布日分层的回溯评测**（release-date-stratified retrospective evaluation）」：live 平台只能评「从现在起」的未来数据，无法回答历史模型在已发生数据上的真实零样本能力，也需长期积累才有统计功效；LiveTS 对权重冻结模型在归档历史上按发布日分层回放，今天即给出所有历史模型的洁净成绩，并以 6 域多样性 + 月度 live track 与两平台互补。详见 paper/main.tex 重定位版。
+
 ## 1. 研究问题与假设
 
 **问题**：当前时序预测评测体系存在三重失效：
