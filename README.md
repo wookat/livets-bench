@@ -4,6 +4,13 @@ LiveTS：按模型发布日分层的回溯评测基准（release-date-stratified
 
 核心主张：**只在模型权重发布时点之后产生的数据上评测**——对权重冻结的模型，在已归档的多域历史上按发布日分层回放，等价于一个从各模型发布日起就在运行的 live 平台，且今天即可一次性给出所有历史模型的洁净成绩。与并行的 live 平台（Impermanent [arXiv:2603.08707]、TS-Arena [arXiv:2512.20761]）互补：它们只能评「从现在起」的未来数据且各自单域（GitHub 活动 / 能源），LiveTS 提供 6 域回溯分层 + 月度 live track 衔接。
 
+> **定位调整（2026-08-10）**：按课题组战略决定，LiveTS 不再作为独立主会投稿主力；
+> 数据资产已改造为 P2 污染审计（wookat/tsfm-contamination-audit）的 post-cutoff
+> 非成员对照来源（`scripts/export_p2_nonmember.py`，8 数据集 × 6 域，冻结 NPZ +
+> SHA-256 清单已入 P2 仓库 `data_livets/`）。采集管道 / 榜单 / 月度 round 照常运行，
+> 作为长期基础设施；重定位版论文（paper/）保留归档，将来作为 D&B workshop 论文或
+> P2 配套资源发布。
+
 ## 结构
 - `configs/sources.yaml` — 数据源配置（6 域 7 源，全部免 key；配置化、无硬编码路径）
 - `livets/collectors/` — 采集器：原始快照落盘 + tidy CSV，PIT 语义（`collected_at` 时间戳）
